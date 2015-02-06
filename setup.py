@@ -26,10 +26,10 @@ import sys
 
 # This check is also made in IPython/__init__, don't forget to update both when
 # changing Python version requirements.
-v = sys.version_info
-if v[:2] < (2,7) or (v[0] >= 3 and v[:2] < (3,3)):
-    error = "ERROR: IPython requires Python version 2.7 or 3.3 or above."
-    print(error, file=sys.stderr)
+V = sys.version_info
+if V[:2] < (2, 7) or (V[0] >= 3 and V[:2] < (3, 3)):
+    ERROR = "ERROR: IPython requires Python version 2.7 or 3.3 or above."
+    print(ERROR, file=sys.stderr)
     sys.exit(1)
 
 PY3 = (sys.version_info[0] >= 3)
@@ -48,7 +48,8 @@ from glob import glob
 
 # BEFORE importing distutils, remove MANIFEST. distutils doesn't properly
 # update it when the contents of directories change.
-if os.path.exists('MANIFEST'): os.remove('MANIFEST')
+if os.path.exists('MANIFEST'):
+    os.remove('MANIFEST')
 
 from distutils.core import setup
 
@@ -87,7 +88,7 @@ pjoin = os.path.join
 # Handle OS specific things
 #-------------------------------------------------------------------------------
 
-if os.name in ('nt','dos'):
+if os.name in ('nt', 'dos'):
     os_name = 'windows'
 else:
     os_name = os.name
@@ -112,7 +113,6 @@ def require_clean_submodules():
     this is not a distutils command.
     """
     # PACKAGERS: Add a return here to skip checks for git submodules
-    
     # don't do anything if nothing is actually supposed to happen
     for do_nothing in ('-h', '--help', '--help-commands', 'clean', 'submodule'):
         if do_nothing in sys.argv:
@@ -141,7 +141,7 @@ require_clean_submodules()
 #-------------------------------------------------------------------------------
 
 # update the manuals when building a source dist
-if len(sys.argv) >= 2 and sys.argv[1] in ('sdist','bdist_rpm'):
+if len(sys.argv) >= 2 and sys.argv[1] in ('sdist', 'bdist_rpm'):
 
     # List of things to be updated. Each entry is a triplet of args for
     # target_update()
@@ -171,7 +171,7 @@ if len(sys.argv) >= 2 and sys.argv[1] in ('sdist','bdist_rpm'):
                  ]
 
 
-    [ target_update(*t) for t in to_update ]
+    [target_update(*t) for t in to_update]
 
 #---------------------------------------------------------------------------
 # Find all the packages, package data, and data_files
@@ -195,7 +195,8 @@ from distutils.command.upload import upload
 
 class UploadWindowsInstallers(upload):
 
-    description = "Upload Windows installers to PyPI (only used from tools/release_windows.py)"
+    description = """Upload Windows installers to PyPI\
+(only used from tools/release_windows.py)"""
     user_options = upload.user_options + [
         ('files=', 'f', 'exe file (or glob) to upload')
     ]
@@ -247,15 +248,16 @@ setuptools_extra_args = {}
 # setuptools requirements
 
 extras_require = dict(
-    parallel = ['pyzmq>=2.1.11'],
-    qtconsole = ['pyzmq>=2.1.11', 'pygments'],
-    zmq = ['pyzmq>=2.1.11'],
-    doc = ['Sphinx>=1.1', 'numpydoc'],
-    test = ['nose>=0.10.1', 'requests'],
-    terminal = [],
-    nbformat = ['jsonschema>=2.0'],
-    notebook = ['tornado>=4.0', 'pyzmq>=2.1.11', 'jinja2', 'pygments', 'mistune>=0.5'],
-    nbconvert = ['pygments', 'jinja2', 'mistune>=0.3.1']
+    parallel=['pyzmq>=2.1.11'],
+    qtconsole=['pyzmq>=2.1.11', 'pygments'],
+    zmq=['pyzmq>=2.1.11'],
+    doc=['Sphinx>=1.1', 'numpydoc'],
+    test=['nose>=0.10.1', 'requests'],
+    terminal=[],
+    nbformat=['jsonschema>=2.0'],
+    notebook=['tornado>=4.0', 'pyzmq>=2.1.11', 'jinja2', 'pygments',
+                'mistune>=0.5'],
+    nbconvert=['pygments', 'jinja2', 'mistune>=0.3.1']
 )
 
 if not sys.platform.startswith('win'):
@@ -285,15 +287,14 @@ if 'setuptools' in sys.modules:
     # setup.py develop should check for submodules
     from setuptools.command.develop import develop
     setup_args['cmdclass']['develop'] = require_submodules(develop)
-    setup_args['cmdclass']['bdist_wheel'] = css_js_prerelease(get_bdist_wheel())
-    
+    setup_args['cmdclass']['bdist_wheel'] = css_js_prerelease(get_bdist_wheel()) 
     setuptools_extra_args['zip_safe'] = False
     setuptools_extra_args['entry_points'] = {
         'console_scripts': find_entry_points(),
         'pygments.lexers': [
-            'ipythonconsole = IPython.nbconvert.utils.lexers:IPythonConsoleLexer',
-            'ipython = IPython.nbconvert.utils.lexers:IPythonLexer',
-            'ipython3 = IPython.nbconvert.utils.lexers:IPython3Lexer',
+            'ipythonconsole=IPython.nbconvert.utils.lexers:IPythonConsoleLexer',
+            'ipython=IPython.nbconvert.utils.lexers:IPythonLexer',
+            'ipython3=IPython.nbconvert.utils.lexers:IPython3Lexer',
         ],
     }
     setup_args['extras_require'] = extras_require
@@ -306,14 +307,15 @@ if 'setuptools' in sys.modules:
     if 'bdist_wininst' in sys.argv:
         if len(sys.argv) > 2 and \
                ('sdist' in sys.argv or 'bdist_rpm' in sys.argv):
-            print("ERROR: bdist_wininst must be run alone. Exiting.", file=sys.stderr)
+            print("ERROR: bdist_wininst must be run alone. Exiting.",
+                file=sys.stderr)
             sys.exit(1)
         setup_args['data_files'].append(
             ['Scripts', ('scripts/ipython.ico', 'scripts/ipython_nb.ico')])
-        setup_args['scripts'] = [pjoin('scripts','ipython_win_post_install.py')]
+        setup_args['scripts'] = [pjoin('scripts', 'ipython_win_post_install.py')]
         setup_args['options'] = {"bdist_wininst":
-                                 {"install_script":
-                                  "ipython_win_post_install.py"}}
+                                  {"install_script":
+                                   "ipython_win_post_install.py"}}
 
 else:
     # If we are installing without setuptools, call this function which will
@@ -324,7 +326,8 @@ else:
             check_for_dependencies()
             break
     # scripts has to be a non-empty list, or install_scripts isn't called
-    setup_args['scripts'] = [e.split('=')[0].strip() for e in find_entry_points()]
+    setup_args['scripts'] = [e.split('=')[0].strip()
+                            for e in find_entry_points()]
 
     setup_args['cmdclass']['build_scripts'] = build_scripts_entrypt
 
