@@ -29,7 +29,7 @@ try:
     _suffixes = all_suffixes()
 except ImportError:
     from imp import get_suffixes
-    _suffixes = [ s[0] for s in get_suffixes() ]
+    _suffixes = [s[0] for s in get_suffixes()]
 
 # Third-party imports
 from time import time
@@ -167,8 +167,8 @@ def try_import(mod, only_modules=False):
 
     completions = []
     if (not hasattr(m, '__file__')) or (not only_modules) or m_is_init:
-        completions.extend( [attr for attr in dir(m) if
-                             is_importable(m, attr, only_modules)])
+        completions.extend([attr for attr in dir(m) if
+                            is_importable(m, attr, only_modules)])
 
     completions.extend(getattr(m, '__all__', []))
     if m_is_init:
@@ -192,7 +192,7 @@ def quick_completer(cmd, completions):
     Example::
 
         [d:\ipython]|1> import ipy_completers
-        [d:\ipython]|2> ipy_completers.quick_completer('foo', ['bar','baz'])
+        [d:\ipython]|2> ipy_completers.quick_completer('foo', ['bar', 'baz'])
         [d:\ipython]|3> foo b<TAB>
         bar baz
         [d:\ipython]|3> foo ba
@@ -204,7 +204,7 @@ def quick_completer(cmd, completions):
     def do_complete(self, event):
         return completions
 
-    get_ipython().set_hook('complete_command',do_complete, str_key = cmd)
+    get_ipython().set_hook('complete_command', do_complete, str_key=cmd)
 
 def module_completion(line):
     """
@@ -223,7 +223,7 @@ def module_completion(line):
         return ['import ']
 
     # 'from xy<tab>' or 'import xy<tab>'
-    if nwords < 3 and (words[0] in ['import','from']) :
+    if nwords < 3 and (words[0] in ['import', 'from']):
         if nwords == 1:
             return get_root_modules()
         mod = words[1].split('.')
@@ -243,7 +243,7 @@ def module_completion(line):
 # These all have the func(self, event) signature to be used as custom
 # completers
 
-def module_completer(self,event):
+def module_completer(self, event):
     """Give completions after user has typed 'import ...' or 'from ...'"""
 
     # This works in all versions of python.  While 2.5 has
@@ -280,13 +280,14 @@ def magic_run_completer(self, event):
     # be arguments to the input script.
 
     if any(magic_run_re.match(c) for c in comps):
-        matches =  [f.replace('\\','/') + ('/' if isdir(f) else '')
-                            for f in lglob(relpath+'*')]
+        matches = [f.replace('\\', '/') + ('/' if isdir(f) else '')
+                   for f in lglob(relpath+'*')]
     else:
-        dirs = [f.replace('\\','/') + "/" for f in lglob(relpath+'*') if isdir(f)]
-        pys =  [f.replace('\\','/')
-                for f in lglob(relpath+'*.py') + lglob(relpath+'*.ipy') +
-                lglob(relpath+'*.ipynb') + lglob(relpath + '*.pyw')]
+        dirs = [f.replace('\\', '/') + "/"
+                for f in lglob(relpath+'*') if isdir(f)]
+        pys = [f.replace('\\', '/')
+               for f in lglob(relpath+'*.py') + lglob(relpath+'*.ipy') +
+               lglob(relpath+'*.ipynb') + lglob(relpath + '*.pyw')]
 
         matches = dirs + pys
 
@@ -312,7 +313,7 @@ def cd_completer(self, event):
         width_dh = str(len(str(len(ip.user_ns['_dh']) + 1)))
         # jump in directory history by number
         fmt = '-%0' + width_dh +'d [%s]'
-        ents = [ fmt % (i,s) for i,s in enumerate(ip.user_ns['_dh'])]
+        ents = [fmt % (i, s) for i, s in enumerate(ip.user_ns['_dh'])]
         if len(ents) > 1:
             return ents
         return []
@@ -322,10 +323,10 @@ def cd_completer(self, event):
 
     # Expand ~ in path and normalize directory separators.
     relpath, tilde_expand, tilde_val = expand_user(relpath)
-    relpath = relpath.replace('\\','/')
+    relpath = relpath.replace('\\', '/')
 
     found = []
-    for d in [f.replace('\\','/') + '/' for f in glob.glob(relpath+'*')
+    for d in [f.replace('\\', '/') + '/' for f in glob.glob(relpath+'*')
               if os.path.isdir(f)]:
         if ' ' in d:
             # we don't want to deal with any of that, complex code
@@ -339,7 +340,7 @@ def cd_completer(self, event):
             return [compress_user(relpath, tilde_expand, tilde_val)]
 
         # if no completions so far, try bookmarks
-        bks = self.db.get('bookmarks',{})
+        bks = self.db.get('bookmarks', {})
         bkmatches = [s for s in bks if s.startswith(event.symbol)]
         if bkmatches:
             return bkmatches
