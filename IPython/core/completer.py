@@ -79,7 +79,7 @@ from IPython.utils.traitlets import CBool, Enum
 #-----------------------------------------------------------------------------
 
 # Public API
-__all__ = ['Completer','IPCompleter']
+__all__ = ['Completer', 'IPCompleter']
 
 if sys.platform == 'win32':
     PROTECTABLES = ' '
@@ -180,28 +180,28 @@ def penalize_magics_key(word):
 
     [The choice of the final % is arbitrary.]
 
-    Since "matplotlib" < "matplotlib%" as strings, 
+    Since "matplotlib" < "matplotlib%" as strings,
     "timeit" will appear before the magic "%timeit" in the ordering
 
     For consistency, move "%%" to the end, so cell magics appear *after*
     line magics with the same name.
 
-    A check is performed that there are no other "%" in the string; 
+    A check is performed that there are no other "%" in the string;
     if there are, then the string is not a magic command and is left unchanged.
 
     """
 
-    # Move any % signs from start to end of the key 
+    # Move any % signs from start to end of the key
     # provided there are no others elsewhere in the string
 
     if word[:2] == "%%":
         if not "%" in word[2:]:
-            return word[2:] + "%%" 
+            return word[2:] + "%%"
 
     if word[:1] == "%":
         if not "%" in word[1:]:
             return word[1:] + "%"
-    
+
     return word
 
 
@@ -267,18 +267,18 @@ class CompletionSplitter(object):
 class Completer(Configurable):
 
     greedy = CBool(False, config=True,
-        help="""Activate greedy completion
+                   help="""Activate greedy completion
 
         This will enable completion on elements of lists, results of function calls, etc.,
         but can be unsafe because the code is actually evaluated on TAB.
         """
-    )
-    
+                  )
+
 
     def __init__(self, namespace=None, global_namespace=None, **kwargs):
         """Create a new completer for the command line.
 
-        Completer(namespace=ns,global_namespace=ns2) -> completer instance.
+        Completer(namespace=ns, global_namespace=ns2) -> completer instance.
 
         If unspecified, the default namespace where completions are performed
         is __main__ (technically, __main__.__dict__). Namespaces should be
@@ -368,17 +368,17 @@ class Completer(Configurable):
         #io.rprint('Completer->attr_matches, txt=%r' % text) # dbg
         # Another option, seems to work great. Catches things like ''.<tab>
         m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", text)
-    
+
         if m:
             expr, attr = m.group(1, 3)
         elif self.greedy:
             m2 = re.match(r"(.+)\.(\w*)$", self.line_buffer)
             if not m2:
                 return []
-            expr, attr = m2.group(1,2)
+            expr, attr = m2.group(1, 2)
         else:
             return []
-    
+
         try:
             obj = eval(expr, self.namespace)
         except:
@@ -389,7 +389,7 @@ class Completer(Configurable):
 
         if self.limit_to__all__ and hasattr(obj, '__all__'):
             words = get__all__entries(obj)
-        else: 
+        else:
             words = dir2(obj)
 
         try:
@@ -402,7 +402,7 @@ class Completer(Configurable):
             pass
         # Build match list to return
         n = len(attr)
-        res = ["%s.%s" % (expr, w) for w in words if w[:n] == attr ]
+        res = ["%s.%s" % (expr, w) for w in words if w[:n] == attr]
         return res
 
 
@@ -412,7 +412,7 @@ def get__all__entries(obj):
         words = getattr(obj, '__all__')
     except:
         return []
-    
+
     return [w for w in words if isinstance(w, string_types)]
 
 
@@ -420,14 +420,14 @@ def match_dict_keys(keys, prefix):
     """Used by dict_key_matches, matching the prefix to a list of keys"""
     if not prefix:
         return None, 0, [repr(k) for k in keys
-                      if isinstance(k, (string_types, bytes))]
+                         if isinstance(k, (string_types, bytes))]
     quote_match = re.search('["\']', prefix)
     quote = quote_match.group()
     try:
         prefix_str = eval(prefix + quote, {})
     except Exception:
         return None, 0, []
-    
+
     token_match = re.search(r'\w*$', prefix, re.UNICODE)
     token_start = token_match.start()
     token_prefix = token_match.group()
@@ -486,15 +486,15 @@ class IPCompleter(Completer):
 
         if self.readline:
             self.readline.set_completer_delims(self.splitter.delims)
-    
+
     merge_completions = CBool(True, config=True,
         help="""Whether to merge completion results into a single list
         
         If False, only the completion results from the first non-empty
         completer will be returned.
         """
-    )
-    omit__names = Enum((0,1,2), default_value=2, config=True,
+                             )
+    omit__names = Enum((0, 1, 2), default_value=2, config=True,
         help="""Instruct the completer to omit private method names
         
         Specifically, when completing on ``object.<tab>``.
@@ -515,7 +515,7 @@ class IPCompleter(Completer):
         
         When False [default]: the __all__ attribute is ignored 
         """
-    )
+                           )
 
     def __init__(self, shell=None, namespace=None, global_namespace=None,
                  use_readline=True, config=None, **kwargs):
@@ -566,8 +566,8 @@ class IPCompleter(Completer):
 
         # Determine if we are running on 'dumb' terminals, like (X)Emacs
         # buffers, to avoid completion problems.
-        term = os.environ.get('TERM','xterm')
-        self.dumb_terminal = term in ['dumb','emacs']
+        term = os.environ.get('TERM', 'xterm')
+        self.dumb_terminal = term in ['dumb', 'emacs']
 
         # Special handling of backslashes needed in win32 platforms
         if sys.platform == "win32":
@@ -587,7 +587,7 @@ class IPCompleter(Completer):
                          self.magic_matches,
                          self.python_func_kw_matches,
                          self.dict_key_matches,
-                         ]
+                        ]
 
     def all_completions(self, text):
         """
@@ -596,11 +596,11 @@ class IPCompleter(Completer):
         """
         return self.complete(text)[1]
 
-    def _clean_glob(self,text):
+    def _clean_glob(self, text):
         return self.glob("%s*" % text)
 
-    def _clean_glob_win32(self,text):
-        return [f.replace("\\","/")
+    def _clean_glob_win32(self, text):
+        return [f.replace("\\", "/")
                 for f in self.glob("%s*" % text)]
 
     def file_matches(self, text):
@@ -652,7 +652,7 @@ class IPCompleter(Completer):
         if not open_quotes and lsplit != protect_filename(lsplit):
             # if protectables are found, do matching on the whole escaped name
             has_protectables = True
-            text0,text = text,lsplit
+            text0, text = text, lsplit
         else:
             has_protectables = False
             text = os.path.expanduser(text)
@@ -661,7 +661,7 @@ class IPCompleter(Completer):
             return [text_prefix + protect_filename(f) for f in self.glob("*")]
 
         # Compute the matches from the filesystem
-        m0 = self.clean_glob(text.replace('\\',''))
+        m0 = self.clean_glob(text.replace('\\', ''))
 
         if has_protectables:
             # If we had protectables, we need to revert our changes to the
@@ -696,21 +696,21 @@ class IPCompleter(Completer):
         cell_magics = lsm['cell']
         pre = self.magic_escape
         pre2 = pre+pre
-        
+
         # Completion logic:
         # - user gives %%: only do cell magics
         # - user gives %: do both line and cell magics
         # - no prefix: do both
         # In other words, line magics are skipped if the user gives %% explicitly
         bare_text = text.lstrip(pre)
-        comp = [ pre2+m for m in cell_magics if m.startswith(bare_text)]
+        comp = [pre2+m for m in cell_magics if m.startswith(bare_text)]
         if not text.startswith(pre2):
-            comp += [ pre+m for m in line_magics if m.startswith(bare_text)]
+            comp += [pre+m for m in line_magics if m.startswith(bare_text)]
         return comp
 
-    def python_matches(self,text):
+    def python_matches(self, text):
         """Match attributes or global python names"""
-        
+
         #io.rprint('Completer->python_matches, txt=%r' % text) # dbg
         if "." in text:
             try:
@@ -719,11 +719,11 @@ class IPCompleter(Completer):
                     if self.omit__names == 1:
                         # true if txt is _not_ a __ name, false otherwise:
                         no__name = (lambda txt:
-                                    re.match(r'.*\.__.*?__',txt) is None)
+                                    re.match(r'.*\.__.*?__', txt) is None)
                     else:
                         # true if txt is _not_ a _ name, false otherwise:
                         no__name = (lambda txt:
-                                    re.match(r'\._.*?',txt[txt.rindex('.'):]) is None)
+                                    re.match(r'\._.*?', txt[txt.rindex('.'):]) is None)
                     matches = filter(no__name, matches)
             except NameError:
                 # catches <undefined attributes>.<tab>
@@ -771,29 +771,29 @@ class IPCompleter(Completer):
                 #for cython embededsignature=True the constructor docstring
                 #belongs to the object itself not __init__
                 ret += self._default_arguments_from_docstring(
-                            getattr(obj, '__doc__', ''))
+                     getattr(obj, '__doc__', ''))
                 # for classes, check for __init__,__new__
                 call_obj = (getattr(obj, '__init__', None) or
-                       getattr(obj, '__new__', None))
+                            getattr(obj, '__new__', None))
             # for all others, check if they are __call__able
             elif hasattr(obj, '__call__'):
                 call_obj = obj.__call__
 
         ret += self._default_arguments_from_docstring(
-                 getattr(call_obj, '__doc__', ''))
+             getattr(call_obj, '__doc__', ''))
 
         try:
-            args,_,_1,defaults = inspect.getargspec(call_obj)
+            args, _, _1, defaults = inspect.getargspec(call_obj)
             if defaults:
-                ret+=args[-len(defaults):]
+                ret += args[-len(defaults):]
         except TypeError:
             pass
 
         return list(set(ret))
 
-    def python_func_kw_matches(self,text):
+    def python_func_kw_matches(self, text):
         """Match named parameters (kwargs) of the last open function"""
-        
+
         if "." in text: # a parameter cannot be dotted
             return []
         try: regexp = self.__funcParamsRegex
@@ -806,7 +806,7 @@ class IPCompleter(Completer):
                 ''', re.VERBOSE | re.DOTALL)
         # 1. find the nearest identifier that comes before an unclosed
         # parenthesis before the cursor
-        # e.g. for "foo (1+bar(x), pa<cursor>,a=1)", the candidate is "foo"
+        # e.g. for "foo (1+bar(x), pa<cursor>, a=1)", the candidate is "foo"
         tokens = regexp.findall(self.text_until_cursor)
         tokens.reverse()
         iterTokens = iter(tokens); openPar = 0
@@ -844,7 +844,7 @@ class IPCompleter(Completer):
         for callableMatch in callableMatches:
             try:
                 namedArgs = self._default_arguments(eval(callableMatch,
-                                                        self.namespace))
+                                                         self.namespace))
             except:
                 continue
 
@@ -916,7 +916,7 @@ class IPCompleter(Completer):
         closing_quote, token_offset, matches = match_dict_keys(keys, prefix)
         if not matches:
             return matches
-        
+
         # get the cursor position of
         # - the text being completed
         # - the start of the key text
@@ -927,13 +927,13 @@ class IPCompleter(Completer):
             completion_start = key_start + token_offset
         else:
             key_start = completion_start = match.end()
-        
+
         # grab the leading prefix, to make sure all completions start with `text`
         if text_start > key_start:
             leading = ''
         else:
             leading = text[text_start:completion_start]
-        
+
         # the index of the `[` character
         bracket_idx = match.end(1)
 
@@ -952,14 +952,14 @@ class IPCompleter(Completer):
             # brackets were opened inside text, maybe close them
             if not continuation.startswith(']'):
                 suf += ']'
-        
+
         return [leading + k + suf for k in matches]
 
     def latex_matches(self, text):
         u"""Match Latex syntax for unicode characters.
         
         This does both \\alp -> \\alpha and \\alpha -> α
-        
+
         Used on Python 3 only.
         """
         slashpos = text.rfind('\\')
@@ -987,7 +987,7 @@ class IPCompleter(Completer):
         event = Bunch()
         event.line = line
         event.symbol = text
-        cmd = line.split(None,1)[0]
+        cmd = line.split(None, 1)[0]
         event.command = cmd
         event.text_until_cursor = self.text_until_cursor
 
@@ -1003,7 +1003,7 @@ class IPCompleter(Completer):
         for c in itertools.chain(self.custom_completers.s_matches(cmd),
                  try_magic,
                  self.custom_completers.flat_matches(self.text_until_cursor)):
-            #print "try",c # dbg
+            #print "try", c # dbg
             try:
                 res = c(event)
                 if res:
@@ -1123,7 +1123,7 @@ class IPCompleter(Completer):
           state : int
             Counter used by readline.
         """
-        if state==0:
+        if state == 0:
 
             self.line_buffer = line_buffer = self.readline.get_line_buffer()
             cursor_pos = self.readline.get_endidx()
