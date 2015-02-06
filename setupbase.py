@@ -56,7 +56,7 @@ except NameError:
 
 # A little utility we'll need below, since glob() does NOT allow you to do
 # exclusion on multiple endings!
-def file_doesnt_endwith(test,endings):
+def file_doesnt_endwith(test, endings):
     """Return true if test is a file and its name does NOT end with any
     of the strings listed in endings."""
     if not isfile(test):
@@ -71,7 +71,7 @@ def file_doesnt_endwith(test,endings):
 #---------------------------------------------------------------------------
 
 # release.py contains version, authors, license, url, keywords, etc.
-execfile(pjoin(repo_root, 'IPython','core','release.py'), globals())
+execfile(pjoin(repo_root, 'IPython', 'core', 'release.py'), globals())
 
 # Create a dict with the basic information
 # This dict is eventually passed to setup after additional keys are added.
@@ -102,7 +102,7 @@ def find_packages():
     """
     excludes = ['deathrow', 'quarantine']
     packages = []
-    for dir,subdirs,files in os.walk('IPython'):
+    for dir, subdirs, files in os.walk('IPython'):
         package = dir.replace(os.path.sep, '.')
         if any(package.startswith('IPython.'+exc) for exc in excludes):
             # package is to be excluded (e.g. deathrow)
@@ -123,14 +123,12 @@ def find_package_data():
     """
     # This is not enough for these things to appear in an sdist.
     # We need to muck with the MANIFEST to get this to work
-    
     # exclude components and less from the walk;
     # we will build the components separately
     excludes = [
         pjoin('static', 'components'),
         pjoin('static', '*', 'less'),
     ]
-    
     # walk notebook resources:
     cwd = os.getcwd()
     os.chdir(os.path.join('IPython', 'html'))
@@ -142,21 +140,24 @@ def find_package_data():
             continue
         for f in files:
             static_data.append(pjoin(parent, f))
-    
     components = pjoin("static", "components")
     # select the components we actually need to install
-    # (there are lots of resources we bundle for sdist-reasons that we don't actually use)
+    # (there are lots of resources we bundle for sdist-reasons that we don't 
+    #  actually use)
     static_data.extend([
         pjoin(components, "backbone", "backbone-min.js"),
         pjoin(components, "bootstrap", "js", "bootstrap.min.js"),
-        pjoin(components, "bootstrap-tour", "build", "css", "bootstrap-tour.min.css"),
-        pjoin(components, "bootstrap-tour", "build", "js", "bootstrap-tour.min.js"),
+        pjoin(components, "bootstrap-tour", "build", "css",
+                "bootstrap-tour.min.css"),
+        pjoin(components, "bootstrap-tour", "build", "js",
+                "bootstrap-tour.min.js"),
         pjoin(components, "es6-promise", "*.js"),
         pjoin(components, "font-awesome", "fonts", "*.*"),
         pjoin(components, "google-caja", "html-css-sanitizer-minified.js"),
         pjoin(components, "jquery", "jquery.min.js"),
         pjoin(components, "jquery-ui", "ui", "minified", "jquery-ui.min.js"),
-        pjoin(components, "jquery-ui", "themes", "smoothness", "jquery-ui.min.css"),
+        pjoin(components, "jquery-ui", "themes", "smoothness",
+            "jquery-ui.min.css"),
         pjoin(components, "jquery-ui", "themes", "smoothness", "images", "*"),
         pjoin(components, "marked", "lib", "marked.js"),
         pjoin(components, "requirejs", "require.js"),
@@ -166,22 +167,17 @@ def find_package_data():
         pjoin(components, "term.js", "src", "term.js"),
         pjoin(components, "text-encoding", "lib", "encoding.js"),
     ])
-    
     # Ship all of Codemirror's CSS and JS
     for parent, dirs, files in os.walk(pjoin(components, 'codemirror')):
         for f in files:
             if f.endswith(('.js', '.css')):
                 static_data.append(pjoin(parent, f))
-    
     os.chdir(os.path.join('tests',))
     js_tests = glob('*.js') + glob('*/*.js')
-
     os.chdir(os.path.join(cwd, 'IPython', 'nbconvert'))
     nbconvert_templates = [os.path.join(dirpath, '*.*')
                             for dirpath, _, _ in os.walk('templates')]
-
     os.chdir(cwd)
-
     package_data = {
         'IPython.config.profile' : ['README*', '*/*.py'],
         'IPython.core.tests' : ['*.png', '*.jpg'],
@@ -237,7 +233,7 @@ def check_package_data_first(command):
 # Find data files
 #---------------------------------------------------------------------------
 
-def make_dir_struct(tag,base,out_base):
+def make_dir_struct(tag, base, out_base):
     """Make the directory structure of all files below a starting dir.
 
     This is just a convenience routine to help build a nested directory
@@ -252,7 +248,7 @@ def make_dir_struct(tag,base,out_base):
     lpathsep = len(pathsep)
 
     out = []
-    for (dirpath,dirnames,filenames) in os.walk(base):
+    for (dirpath, dirnames, filenames) in os.walk(base):
         # we need to strip out the dirpath from the base to map it to the
         # output (installation) path.  This requires possibly stripping the
         # path separator, because otherwise pjoin will not work correctly
@@ -262,11 +258,11 @@ def make_dir_struct(tag,base,out_base):
         if dp_eff.startswith(pathsep):
             dp_eff = dp_eff[lpathsep:]
         # The output path must be anchored at the out_base marker
-        out_path = pjoin(out_base,dp_eff)
+        out_path = pjoin(out_base, dp_eff)
         # Now we can generate the final filenames. Since os.walk only produces
         # filenames, we must join back with the dirpath to get full valid file
         # paths:
-        pfiles = [pjoin(dirpath,f) for f in filenames]
+        pfiles = [pjoin(dirpath, f) for f in filenames]
         # Finally, generate the entry we need, which is a pari of (output
         # path, files) for use as a data_files parameter in install_data.
         out.append((out_path, pfiles))
@@ -284,13 +280,13 @@ def find_data_files():
     manpagebase = pjoin('share', 'man', 'man1')
 
     # Simple file lists can be made by hand
-    manpages = [f for f in glob(pjoin('docs','man','*.1.gz')) if isfile(f)]
+    manpages = [f for f in glob(pjoin('docs', 'man', '*.1.gz')) if isfile(f)]
     if not manpages:
         # When running from a source tree, the manpages aren't gzipped
-        manpages = [f for f in glob(pjoin('docs','man','*.1')) if isfile(f)]
+        manpages = [f for f in glob(pjoin('docs', 'man', '*.1')) if isfile(f)]
 
     # And assemble the entire output list
-    data_files = [ (manpagebase, manpages) ]
+    data_files = [(manpagebase, manpages)]
 
     return data_files
 
@@ -315,14 +311,14 @@ def make_man_update_target(manpage):
     manpage_gz = manpage + '.gz'
     manpath = pjoin(man_dir, manpage)
     manpath_gz = pjoin(man_dir, manpage_gz)
-    gz_cmd = ( "cd %(man_dir)s && gzip -9c %(manpage)s > %(manpage_gz)s" %
-               locals() )
+    gz_cmd = ("cd %(man_dir)s && gzip -9c %(manpage)s > %(manpage_gz)s" %
+               locals())
     return (manpath_gz, [manpath], gz_cmd)
 
 # The two functions below are copied from IPython.utils.path, so we don't need
 # to import IPython during setup, which fails on Python 3.
 
-def target_outdated(target,deps):
+def target_outdated(target, deps):
     """Determine whether a target is out of date.
 
     target_outdated(target,deps) -> 1/0
@@ -346,7 +342,7 @@ def target_outdated(target,deps):
     return 0
 
 
-def target_update(target,deps,cmd):
+def target_update(target, deps, cmd):
     """Update a target with a given command given a list of dependencies.
 
     target_update(target,deps,cmd) -> runs cmd if target is outdated.
@@ -354,7 +350,7 @@ def target_update(target,deps,cmd):
     This is just a wrapper around target_outdated() which calls the given
     command if target is outdated."""
 
-    if target_outdated(target,deps):
+    if target_outdated(target, deps):
         os.system(cmd)
 
 #---------------------------------------------------------------------------
@@ -469,8 +465,8 @@ class install_symlinked(install):
     
     # 'sub_commands': a list of commands this command might have to run to
     # get its work done.  See cmd.py for more info.
-    sub_commands = [('install_lib_symlink', lambda self:True),
-                    ('install_scripts_sym', lambda self:True),
+    sub_commands = [('install_lib_symlink', lambda self: True),
+                    ('install_scripts_sym', lambda self: True),
                    ]
 
 class install_scripts_for_symlink(install_scripts):
@@ -527,7 +523,7 @@ def check_for_dependencies():
 #---------------------------------------------------------------------------
 
 # utils.submodule has checks for submodule status
-execfile(pjoin('IPython','utils','submodule.py'), globals())
+execfile(pjoin('IPython', 'utils', 'submodule.py'), globals())
 
 class UpdateSubmodules(Command):
     """Update git submodules
@@ -610,11 +606,12 @@ def git_prebuild(pkg_dir, build_cmd=build_py):
 
 
 def require_submodules(command):
-    """decorator for instructing a command to check for submodules before running"""
+    """decorator for instructing a command to check for submodules before 
+    running"""
     class DecoratedCommand(command):
         def run(self):
             if not check_submodule_status(repo_root) == 'clean':
-                print("submodules missing! Run `setup.py submodule` and try again")
+                print("submodules missing! Run `setup.py submodule and try again")
                 sys.exit(1)
             command.run(self)
     return DecoratedCommand
