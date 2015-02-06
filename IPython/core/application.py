@@ -51,14 +51,14 @@ base_aliases = {
 }
 
 base_flags = dict(
-    debug = ({'Application' : {'log_level' : logging.DEBUG}},
-            "set log level to logging.DEBUG (maximize logging output)"),
-    quiet = ({'Application' : {'log_level' : logging.CRITICAL}},
-            "set log level to logging.CRITICAL (minimize logging output)"),
-    init = ({'BaseIPythonApplication' : {
+    debug=({'Application' : {'log_level' : logging.DEBUG}},
+             "set log level to logging.DEBUG (maximize logging output)"),
+    quiet=({'Application' : {'log_level' : logging.CRITICAL}},
+             "set log level to logging.CRITICAL (minimize logging output)"),
+    init=({'BaseIPythonApplication' : {
                     'copy_config_files' : True,
-                    'auto_create' : True}
-            }, """Initialize profile with default config files.  This is equivalent
+                    'auto_create' : True}},
+            """Initialize profile with default config files.  This is equivalent
             to running `ipython profile create <profile>` prior to startup.
             """)
 )
@@ -80,7 +80,7 @@ class BaseIPythonApplication(Application):
 
     config_file_name = Unicode()
     def _config_file_name_default(self):
-        return self.name.replace('-','_') + u'_config.py'
+        return self.name.replace('-', '_') + u'_config.py'
     def _config_file_name_changed(self, name, old, new):
         if new != old:
             self.config_file_specified.add(new)
@@ -299,12 +299,12 @@ class BaseIPythonApplication(Application):
             location = self.config.ProfileDir.location
             # location is fully specified
             try:
-                p = ProfileDir.find_profile_dir(location, self.config)
+                P = ProfileDir.find_profile_dir(location, self.config)
             except ProfileDirError:
                 # not found, maybe create it
                 if self.auto_create:
                     try:
-                        p = ProfileDir.create_profile_dir(location, self.config)
+                        P = ProfileDir.create_profile_dir(location, self.config)
                     except ProfileDirError:
                         self.log.fatal("Could not create profile directory: %r"%location)
                         self.exit(1)
@@ -316,11 +316,11 @@ class BaseIPythonApplication(Application):
             else:
                 self.log.info("Using existing profile dir: %r"%location)
             # if profile_dir is specified explicitly, set profile name
-            dir_name = os.path.basename(p.location)
+            dir_name = os.path.basename(P.location)
             if dir_name.startswith('profile_'):
                 self.profile = dir_name[8:]
 
-        self.profile_dir = p
+        self.profile_dir = P
         self.config_file_paths.append(p.location)
         self._in_init_profile_dir = False
 
