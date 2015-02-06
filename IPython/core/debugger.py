@@ -44,7 +44,7 @@ prompt = 'ipdb> '
 if '--pydb' in sys.argv:
     try:
         import pydb
-        if hasattr(pydb.pydb, "runl") and pydb.version>'1.17':
+        if hasattr(pydb.pydb, "runl") and pydb.version > '1.17':
             # Version 1.17 is broken, and that's what ships with Ubuntu Edgy, so we
             # better protect against it.
             has_pydb = True
@@ -67,15 +67,15 @@ def BdbQuit_excepthook(et, ev, tb, excepthook=None):
     All other exceptions are processed using the `excepthook`
     parameter.
     """
-    if et==bdb.BdbQuit:
+    if et == bdb.BdbQuit:
         print('Exiting Debugger.')
     elif excepthook is not None:
         excepthook(et, ev, tb)
     else:
         # Backwards compatibility. Raise deprecation warning?
-        BdbQuit_excepthook.excepthook_ori(et,ev,tb)
+        BdbQuit_excepthook.excepthook_ori(et, ev, tb)
 
-def BdbQuit_IPython_excepthook(self,et,ev,tb,tb_offset=None):
+def BdbQuit_IPython_excepthook(self, et, ev, tb, tb_offset=None):
     print('Exiting Debugger.')
 
 
@@ -93,7 +93,7 @@ class Tracer(object):
     """
 
     @skip_doctest
-    def __init__(self,colors=None):
+    def __init__(self, colors=None):
         """Create a local debugger instance.
 
         Parameters
@@ -112,7 +112,7 @@ class Tracer(object):
             from IPython.core.debugger import Tracer; debug_here = Tracer()
 
         Later in your code::
-        
+
             debug_here()  # -> will open up the debugger at that point.
 
         Once the debugger activates, you can use all of its regular commands to
@@ -200,14 +200,14 @@ def _file_lines(fname):
 class Pdb(OldPdb):
     """Modified Pdb class, does not load readline."""
 
-    def __init__(self,color_scheme='NoColor',completekey=None,
+    def __init__(self, color_scheme='NoColor', completekey=None,
                  stdin=None, stdout=None):
 
         # Parent constructor:
         if has_pydb and completekey is None:
-            OldPdb.__init__(self,stdin=stdin,stdout=io.stdout)
+            OldPdb.__init__(self, stdin=stdin, stdout=io.stdout)
         else:
-            OldPdb.__init__(self,completekey,stdin,stdout)
+            OldPdb.__init__(self, completekey, stdin, stdout)
 
         self.prompt = prompt # The default prompt is '(Pdb)'
 
@@ -234,11 +234,11 @@ class Pdb(OldPdb):
             self.do_restart = self.new_do_restart
 
             self.old_all_completions = self.shell.Completer.all_completions
-            self.shell.Completer.all_completions=self.all_completions
+            self.shell.Completer.all_completions = self.all_completions
 
             self.do_list = decorate_fn_with_doc(self.list_command_pydb,
                                                 OldPdb.do_list)
-            self.do_l     = self.do_list
+            self.do_l = self.do_list
             self.do_frame = decorate_fn_with_doc(self.new_do_frame,
                                                  OldPdb.do_frame)
 
@@ -300,7 +300,7 @@ class Pdb(OldPdb):
     def new_do_quit(self, arg):
 
         if hasattr(self, 'old_all_completions'):
-            self.shell.Completer.all_completions=self.old_all_completions
+            self.shell.Completer.all_completions = self.old_all_completions
 
 
         return OldPdb.do_quit(self, arg)
@@ -319,12 +319,12 @@ class Pdb(OldPdb):
     def print_stack_trace(self):
         try:
             for frame_lineno in self.stack:
-                self.print_stack_entry(frame_lineno, context = 5)
+                self.print_stack_entry(frame_lineno, context=5)
         except KeyboardInterrupt:
             pass
 
-    def print_stack_entry(self,frame_lineno,prompt_prefix='\n-> ',
-                          context = 3):
+    def print_stack_entry(self, frame_lineno, prompt_prefix='\n-> ',
+                          context=3):
         #frame, lineno = frame_lineno
         print(self.format_stack_entry(frame_lineno, '', context), file=io.stdout)
 
@@ -334,7 +334,7 @@ class Pdb(OldPdb):
         self.shell.hooks.synchronize_with_editor(filename, lineno, 0)
         # vds: <<
 
-    def format_stack_entry(self, frame_lineno, lprefix=': ', context = 3):
+    def format_stack_entry(self, frame_lineno, lprefix=': ', context=3):
         try:
             import reprlib  # Py 3
         except ImportError:
@@ -348,7 +348,7 @@ class Pdb(OldPdb):
         tpl_call = u'%s%%s%s%%s%s' % (Colors.vName, Colors.valEm, ColorsNormal)
         tpl_line = u'%%s%s%%s %s%%s' % (Colors.lineno, ColorsNormal)
         tpl_line_em = u'%%s%s%%s %s%%s%s' % (Colors.linenoEm, Colors.line,
-                                            ColorsNormal)
+                                             ColorsNormal)
 
         frame, lineno = frame_lineno
 
@@ -382,7 +382,7 @@ class Pdb(OldPdb):
             ret.append('> ')
         else:
             ret.append('  ')
-        ret.append(u'%s(%s)%s\n' % (link,lineno,call))
+        ret.append(u'%s(%s)%s\n' % (link, lineno, call))
 
         start = lineno - 1 - context//2
         lines = ulinecache.getlines(filename)
@@ -390,17 +390,17 @@ class Pdb(OldPdb):
         start = max(start, 0)
         lines = lines[start : start + context]
 
-        for i,line in enumerate(lines):
+        for i, line in enumerate(lines):
             show_arrow = (start + 1 + i == lineno)
             linetpl = (frame is self.curframe or show_arrow) \
                       and tpl_line_em \
                       or tpl_line
             ret.append(self.__format_line(linetpl, filename,
                                           start + 1 + i, line,
-                                          arrow = show_arrow) )
+                                          arrow=show_arrow))
         return ''.join(ret)
 
-    def __format_line(self, tpl_line, filename, lineno, line, arrow = False):
+    def __format_line(self, tpl_line, filename, lineno, line, arrow=False):
         bp_mark = ""
         bp_mark_color = ""
 
@@ -427,11 +427,11 @@ class Pdb(OldPdb):
             if pad >= 3:
                 marker = '-'*(pad-3) + '-> '
             elif pad == 2:
-                 marker = '> '
+                marker = '> '
             elif pad == 1:
-                 marker = '>'
+                marker = '>'
             else:
-                 marker = ''
+                marker = ''
             num = '%s%s' % (marker, str(lineno))
             line = tpl_line % (bp_mark_color + bp_mark, num, line)
         else:
@@ -464,9 +464,11 @@ class Pdb(OldPdb):
                     break
 
                 if lineno == self.curframe.f_lineno:
-                    line = self.__format_line(tpl_line_em, filename, lineno, line, arrow = True)
+                    line = self.__format_line(tpl_line_em, filename, lineno,
+                                              line, arrow=True)
                 else:
-                    line = self.__format_line(tpl_line, filename, lineno, line, arrow = False)
+                    line = self.__format_line(tpl_line, filename, lineno, line,
+                                              arrow=False)
 
                 src.append(line)
                 self.lineno = lineno
@@ -585,7 +587,7 @@ class Pdb(OldPdb):
         line = line.strip()
         # Don't allow setting breakpoint at a blank line
         if (not line or (line[0] == '#') or
-             (line[:3] == '"""') or line[:3] == "'''"):
+                (line[:3] == '"""') or line[:3] == "'''"):
             print('*** Blank or comment', file=self.stdout)
             return 0
         return lineno
