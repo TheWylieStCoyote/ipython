@@ -148,7 +148,7 @@ class LazyConfigValue(HasTraits):
 
 def _is_section_key(key):
     """Is a Config key a section name (does it start with a capital)?"""
-    if key and key[0].upper()==key[0] and not key.startswith('_'):
+    if key and key[0].upper() == key[0] and not key.startswith('_'):
         return True
     else:
         return False
@@ -508,7 +508,7 @@ class CommandLineConfigLoader(ConfigLoader):
         if isinstance(cfg, (dict, Config)):
             # don't clobber whole config sections, update
             # each section from config:
-            for sec,c in iteritems(cfg):
+            for sec, c in iteritems(cfg):
                 self.config[sec].update(c)
         else:
             raise TypeError("Invalid flag: %r" % cfg)
@@ -567,7 +567,7 @@ class KeyValueConfigLoader(CommandLineConfigLoader):
 
             >>> from IPython.config.loader import KeyValueConfigLoader
             >>> cl = KeyValueConfigLoader()
-            >>> d = cl.load_config(["--A.name='brian'","--B.number=0"])
+            >>> d = cl.load_config(["--A.name='brian'", "--B.number=0"])
             >>> sorted(d.items())
             [('A', {'name': 'brian'}), ('B', {'number': 0})]
         """
@@ -630,7 +630,7 @@ class KeyValueConfigLoader(CommandLineConfigLoader):
 
         # ensure argv is a list of unicode strings:
         uargv = self._decode_argv(argv)
-        for idx,raw in enumerate(uargv):
+        for idx, raw in enumerate(uargv):
             # strip leading '-'
             item = raw.lstrip('-')
 
@@ -642,7 +642,7 @@ class KeyValueConfigLoader(CommandLineConfigLoader):
                 break
 
             if kv_pattern.match(raw):
-                lhs,rhs = item.split('=',1)
+                lhs, rhs = item.split('=', 1)
                 # Substitute longnames for aliases.
                 if lhs in aliases:
                     lhs = aliases[lhs]
@@ -656,7 +656,7 @@ class KeyValueConfigLoader(CommandLineConfigLoader):
 
             elif flag_pattern.match(raw):
                 if item in flags:
-                    cfg,help = flags[item]
+                    cfg, help = flags[item]
                     self._load_flag(cfg)
                 else:
                     raise ArgumentError("Unrecognized flag: '%s'"%raw)
@@ -675,7 +675,8 @@ class KeyValueConfigLoader(CommandLineConfigLoader):
 class ArgParseConfigLoader(CommandLineConfigLoader):
     """A loader that uses the argparse module to load from the command line."""
 
-    def __init__(self, argv=None, aliases=None, flags=None, log=None,  *parser_args, **parser_kw):
+    def __init__(self, argv=None, aliases=None, flags=None, log=None,
+                    *parser_args, **parser_kw):
         """Create a config loader for use with argparse.
 
         Parameters
@@ -773,7 +774,7 @@ class KVArgParseConfigLoader(ArgParseConfigLoader):
         if flags is None:
             flags = self.flags
         paa = self.parser.add_argument
-        for key,value in iteritems(aliases):
+        for key, value in iteritems(aliases):
             if key in flags:
                 # flags
                 nargs = '?'
