@@ -28,10 +28,10 @@ import sys
 #-----------------------------------------------------------------------------
 
 # Don't forget to also update setup.py when this changes!
-v = sys.version_info
-if v[:2] < (2,7) or (v[0] >= 3 and v[:2] < (3,3)):
+V = sys.version_info
+if V[:2] < (2, 7) or (V[0] >= 3 and V[:2] < (3, 3)):
     raise ImportError('IPython requires Python version 2.7 or 3.3 or above.')
-del v
+del V
 
 # Make it easy to import extensions - they are always directly on pythonpath.
 # Therefore, non-IPython modules can be added to extensions directory.
@@ -56,8 +56,8 @@ from .utils.frame import extract_module_locals
 
 # Release data
 __author__ = '%s <%s>' % (release.author, release.author_email)
-__license__  = release.license
-__version__  = release.version
+__license__ = release.license
+__version__ = release.version
 version_info = release.version_info
 
 def embed_kernel(module=None, local_ns=None, **kwargs):
