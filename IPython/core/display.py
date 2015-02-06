@@ -18,11 +18,12 @@ from IPython.utils.py3compat import (string_types, cast_bytes_py2, cast_unicode,
 from IPython.testing.skipdoctest import skip_doctest
 
 __all__ = ['display', 'display_pretty', 'display_html', 'display_markdown',
-'display_svg', 'display_png', 'display_jpeg', 'display_latex', 'display_json',
-'display_javascript', 'display_pdf', 'DisplayObject', 'TextDisplayObject',
-'Pretty', 'HTML', 'Markdown', 'Math', 'Latex', 'SVG', 'JSON', 'Javascript',
-'Image', 'clear_output', 'set_matplotlib_formats', 'set_matplotlib_close',
-'publish_display_data']
+           'display_svg', 'display_png', 'display_jpeg', 'display_latex',
+           'display_json', 'display_javascript', 'display_pdf', 'DisplayObject',
+           'TextDisplayObject', 'Pretty', 'HTML', 'Markdown', 'Math', 'Latex',
+           'SVG', 'JSON', 'Javascript', 'Image', 'clear_output',
+           'set_matplotlib_formats', 'set_matplotlib_close',
+           'publish_display_data']
 
 #-----------------------------------------------------------------------------
 # utility functions
@@ -67,7 +68,7 @@ def _display_mimetype(mimetype, objs, raw=False, metadata=None):
         metadata = {mimetype: metadata}
     if raw:
         # turn list of pngdata into list of { 'image/png': pngdata }
-        objs = [ {mimetype: obj} for obj in objs ]
+        objs = [{mimetype: obj} for obj in objs]
     display(*objs, raw=raw, metadata=metadata, include=[mimetype])
 
 #-----------------------------------------------------------------------------
@@ -505,9 +506,9 @@ class SVG(DisplayObject):
 
 class JSON(DisplayObject):
     """JSON expects a JSON-able dict or list
-    
+
     not an already-serialized JSON string.
-    
+
     Scalar types (None, number, string) are not allowed, only dict or list containers.
     """
     # wrap data in a property, which warns about passing already-serialized JSON
@@ -582,9 +583,9 @@ class Javascript(TextDisplayObject):
             css = [css]
         elif css is None:
             css = []
-        if not isinstance(lib, (list,tuple)):
+        if not isinstance(lib, (list, tuple)):
             raise TypeError('expected sequence, got: %r' % lib)
-        if not isinstance(css, (list,tuple)):
+        if not isinstance(css, (list, tuple)):
             raise TypeError('expected sequence, got: %r' % css)
         self.lib = lib
         self.css = css
@@ -614,7 +615,7 @@ def _pngxy(data):
 def _jpegxy(data):
     """read the (width, height) from a JPEG header"""
     # adapted from http://www.64lines.com/jpeg-width-height
-    
+
     idx = 4
     while True:
         block_size = struct.unpack('>H', data[idx:idx+2])[0]
@@ -702,8 +703,7 @@ class Image(DisplayObject):
         elif data is None:
             raise ValueError("No image data found. Expecting filename, url, or data.")
         elif isinstance(data, string_types) and (
-            data.startswith('http') or _safe_exists(data)
-        ):
+                data.startswith('http') or _safe_exists(data)):
             ext = self._find_ext(data)
         else:
             ext = None
@@ -750,7 +750,7 @@ class Image(DisplayObject):
     def reload(self):
         """Reload the raw data from file or URL."""
         if self.embed:
-            super(Image,self).reload()
+            super(Image, self).reload()
             if self.retina:
                 self._retina_shape()
 
@@ -898,7 +898,7 @@ def set_matplotlib_formats(*formats, **kwargs):
         In [1]: set_matplotlib_formats('png', 'jpeg', quality=90)
 
     To set this in your config files use the following::
-    
+
         c.InlineBackend.figure_formats = {'png', 'jpeg'}
         c.InlineBackend.print_figure_kwargs.update({'quality' : 90})
 
@@ -923,19 +923,19 @@ def set_matplotlib_formats(*formats, **kwargs):
 @skip_doctest
 def set_matplotlib_close(close=True):
     """Set whether the inline backend closes all figures automatically or not.
-    
+
     By default, the inline backend used in the IPython Notebook will close all
     matplotlib figures automatically after each cell is run. This means that
     plots in different cells won't interfere. Sometimes, you may want to make
     a plot in one cell and then refine it in later cells. This can be accomplished
     by::
-    
+
         In [1]: set_matplotlib_close(False)
-    
+
     To set this in your config files use the following::
     
         c.InlineBackend.close_figures = False
-    
+
     Parameters
     ----------
     close : bool
