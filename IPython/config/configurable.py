@@ -67,7 +67,6 @@ class Configurable(HasTraits):
             if kwargs.get('config', None) is None:
                 kwargs['config'] = parent.config
             self.parent = parent
-        
         config = kwargs.pop('config', None)
         if config is not None:
             # We used to deepcopy, but for now we are trying to just save
@@ -255,8 +254,9 @@ class Configurable(HasTraits):
                 parents.append(parent)
 
         if parents:
-            pstr = ', '.join([ p.__name__ for p in parents ])
-            lines.append(c('%s will inherit config from: %s'%(cls.__name__, pstr)))
+            pstr = ', '.join([p.__name__ for p in parents])
+            lines.append(c('%s will inherit config from: %s'%
+                (cls.__name__, pstr)))
             lines.append('')
 
         for name, trait in iteritems(cls.class_traits(config=True)):
