@@ -64,18 +64,16 @@ aliases = dict(kernel_aliases)
 
 # also scrub aliases from the frontend
 app_aliases = dict(
-    ip = 'IPythonConsoleApp.ip',
-    transport = 'IPythonConsoleApp.transport',
-    hb = 'IPythonConsoleApp.hb_port',
-    shell = 'IPythonConsoleApp.shell_port',
-    iopub = 'IPythonConsoleApp.iopub_port',
-    stdin = 'IPythonConsoleApp.stdin_port',
-    existing = 'IPythonConsoleApp.existing',
-    f = 'IPythonConsoleApp.connection_file',
-
-    kernel = 'IPythonConsoleApp.kernel_name',
-
-    ssh = 'IPythonConsoleApp.sshserver',
+    ip='IPythonConsoleApp.ip',
+    transport='IPythonConsoleApp.transport',
+    hb='IPythonConsoleApp.hb_port',
+    shell='IPythonConsoleApp.shell_port',
+    iopub='IPythonConsoleApp.iopub_port',
+    stdin='IPythonConsoleApp.stdin_port',
+    existing='IPythonConsoleApp.existing',
+    f='IPythonConsoleApp.connection_file',
+    kernel='IPythonConsoleApp.kernel_name',
+    ssh='IPythonConsoleApp.sshserver',
 )
 aliases.update(app_aliases)
 
@@ -245,7 +243,7 @@ class IPythonConsoleApp(ConnectionFileMixin):
         self.shell_port, self.iopub_port, self.stdin_port, self.hb_port = newports
         
         cf = self.connection_file
-        base,ext = os.path.splitext(cf)
+        base, ext = os.path.splitext(cf)
         base = os.path.basename(base)
         self.connection_file = os.path.basename(base)+'-ssh'+ext
         self.log.info("To connect another client via this tunnel, use:")
@@ -258,7 +256,8 @@ class IPythonConsoleApp(ConnectionFileMixin):
             # 48b node segment (12 hex chars).  Users running more than 32k simultaneous
             # kernels can subclass.
             ident = str(uuid.uuid4()).split('-')[-1]
-            cf = os.path.join(self.profile_dir.security_dir, 'kernel-%s.json' % ident)
+            cf = os.path.join(self.profile_dir.security_dir, 
+                                'kernel-%s.json' % ident)
             # only keep if it's actually new.  Protect against unlikely collision
             # in 48b random search space
             cf = cf if not os.path.exists(cf) else ''
@@ -304,10 +303,10 @@ class IPythonConsoleApp(ConnectionFileMixin):
 
         # in case KM defaults / ssh writing changes things:
         km = self.kernel_manager
-        self.shell_port=km.shell_port
-        self.iopub_port=km.iopub_port
-        self.stdin_port=km.stdin_port
-        self.hb_port=km.hb_port
+        self.shell_port = km.shell_port
+        self.iopub_port = km.iopub_port
+        self.stdin_port = km.stdin_port
+        self.hb_port = km.hb_port
         self.connection_file = km.connection_file
 
         atexit.register(self.kernel_manager.cleanup_connection_file)
