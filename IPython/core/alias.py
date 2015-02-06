@@ -125,7 +125,7 @@ class Alias(object):
     """
 
     # Prepare blacklist
-    blacklist = {'cd','popd','pushd','dhist','alias','unalias'}
+    blacklist = {'cd', 'popd', 'pushd', 'dhist', 'alias', 'unalias'}
 
     def __init__(self, shell, name, cmd):
         self.shell = shell
@@ -169,7 +169,7 @@ class Alias(object):
         if cmd.find('%l') >= 0:
             cmd = cmd.replace('%l', rest)
             rest = ''
-        if nargs==0:
+        if nargs == 0:
             # Simple, argument-less aliases
             cmd = '%s %s' % (cmd, rest)
         else:
@@ -177,8 +177,8 @@ class Alias(object):
             args = rest.split(None, nargs)
             if len(args) < nargs:
                 raise UsageError('Alias <%s> requires %s arguments, %s given.' %
-                      (self.name, nargs, len(args)))
-            cmd = '%s %s' % (cmd % tuple(args[:nargs]),' '.join(args[nargs:]))
+                                    (self.name, nargs, len(args)))
+            cmd = '%s %s' % (cmd % tuple(args[:nargs]), ' '.join(args[nargs:]))
 
         self.shell.system(cmd)
 
